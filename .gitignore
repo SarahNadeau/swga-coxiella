@@ -1,0 +1,4 @@
+data/background_concat.fasta.gz
+data/target_coxiella.fasta.gz
+.idea/
+swga_results*
