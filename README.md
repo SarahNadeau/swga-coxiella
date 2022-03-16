@@ -131,15 +131,20 @@ Software exported many more than 12 primers. How to get only active ones?
 "When you're happy with the primers you've selected (remember, you can check the statistics with swga summary)"
 
 ### Run workflow (without down-sampling)
-This was run on the Aspen cluster, not locally.
+This script was run on the Aspen cluster after downloading the data as above.
 ```
-qlogin
+#!/bin/bash -l
 
-# Downloaded data as above
+# run with: qsub -v DATADIR=$DATADIR -v TARGET_LEN=$TARGET_LEN -v BACKGR_LEN=$BACKGR_LEN run_swga_coxiella.sh
 
-# Get genome lengths
-TARGET_LEN=$(gunzip -c $DATADIR/target_coxiella.fasta.gz | wc -c | awk '{print $1}')
-BACKGR_LEN=$(gunzip -c $DATADIR/background_concat.fasta.gz | wc -c | awk '{print $1}')
+#$ -N swga_coxiella_22-03-16_no_sets
+#$ -cwd
+# Email notifications to <USERID>@cdc.gov
+#$ -M svu7@cdc.gov
+# Email notifications if the job aborts and upon exit
+#$ -m ae
+
+module load nextflow
 
 nextflow run \
     -profile singularity wf-swga/main.nf \
@@ -155,9 +160,9 @@ nextflow run \
     --min_bg_bind_dist 80000 \
     --max_fg_bind_dist 7000 \
     --target-chunk-size $CHUNK_SIZE \
-	--backgr-chunk-size $CHUNK_SIZE \
-	--target-n-chunks $TARGET_N_CHUNKS \
-	--backgr-n-chunks $BACKGR_N_CHUNKS \
-	--min_fg_bind_rate 0.0001 \
-	--run_find_sets "false"
+        --backgr-chunk-size $CHUNK_SIZE \
+        --target-n-chunks $TARGET_N_CHUNKS \
+        --backgr-n-chunks $BACKGR_N_CHUNKS \
+        --min_fg_bind_rate 0.0001 \
+        --run_find_sets "false"
 ```
