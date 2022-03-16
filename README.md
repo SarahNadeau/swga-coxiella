@@ -159,10 +159,5 @@ nextflow run \
     --max_tm 30 \
     --min_bg_bind_dist 80000 \
     --max_fg_bind_dist 7000 \
-    --target-chunk-size $CHUNK_SIZE \
-        --backgr-chunk-size $CHUNK_SIZE \
-        --target-n-chunks $TARGET_N_CHUNKS \
-        --backgr-n-chunks $BACKGR_N_CHUNKS \
-        --min_fg_bind_rate 0.0001 \
-        --run_find_sets "false"
+    --run_find_sets "false"
 ```
