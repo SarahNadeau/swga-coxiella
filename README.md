@@ -24,9 +24,10 @@ rm $DATADIR/background_goat.fasta.gz $DATADIR/background_cow.fasta.gz
 wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/017/105/GCF_000017105.1_ASM1710v1/GCF_000017105.1_ASM1710v1_genomic.fna.gz -O $DATADIR/target_coxiella.fasta.gz
 
 # Exclude genomes
-gunzip -c $DATADIR/exclude*.fasta.gz >> $DATADIR/exclude_concat.fasta
-gzip $DATADIR/exclude_concat.fasta
-rm $DATADIR/exclude_goat.fasta.gz $DATADIR/exclude_cow.fasta.gz
+# Use file already in the downloaded git rep, which was created with:
+# gunzip -c $DATADIR/exclude*.fasta.gz >> $DATADIR/exclude_concat.fasta
+# gzip $DATADIR/exclude_concat.fasta
+# rm $DATADIR/exclude_goat.fasta.gz $DATADIR/exclude_cow.fasta.gz
 ```
 
 ### Run workflow (with down-sampling)
@@ -133,11 +134,16 @@ Software exported many more than 12 primers. How to get only active ones?
 This was run on the Aspen cluster, not locally.
 ```
 qlogin
+
 # Downloaded data as above
+
+# Get genome lengths
+TARGET_LEN=$(gunzip -c $DATADIR/target_coxiella.fasta.gz | wc -c | awk '{print $1}')
+BACKGR_LEN=$(gunzip -c $DATADIR/background_concat.fasta.gz | wc -c | awk '{print $1}')
 
 nextflow run \
     -profile singularity wf-swga/main.nf \
-    --outpath swga-coxiella/22-03-16_swga_no_sets \
+    --outpath swga-coxiella/swga_results_22-03-16_no_sets \
     --target $DATADIR/target_coxiella.fasta.gz \
     --background $DATADIR/background_concat.fasta.gz \
     --exclude $DATADIR/exclude_concat.fasta.gz \
